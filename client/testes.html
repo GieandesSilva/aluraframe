@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Negociações</title>
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <link rel="stylesheet" href="css/bootstrap-theme.css">
+        
+    </head>
+    <body class="container">
+        <script>
+            let lista1 = ['banana', 'laranja', 'mamão'];
+            let lista2 = ['caju', 'tangerina', 'abacaxi'];
+
+            lista1.push(...lista2);
+            console.log(lista1);
+            
+            let numeros = [3,2,11,20,8,7];
+            let novosNumeros = numeros.map(item => item % 2 ? item * 2 : item );
+            
+            console.log("Método não funcional: " + novosNumeros);
+            
+            for (let i = 0; i < numeros.length; i ++){
+                let numero = numeros[i];
+                if((numero %  2) == 0){
+                    console.log(numero);
+                }else{
+                    numero = numero * 2;
+                    console.log(numero);
+                }
+            }
+
+            //numeros.push(...numeros.map((item, indice) => item * indice % 0));
+
+
+        </script>
+    </body>
+</html>
