@@ -7,6 +7,9 @@ class NegociacaoController{ // Responsável pela ação de capturar o conteúdo 
         this._inputQuantidade = $("#quantidade");
         this._inputValor = $("#valor");
         this._listaNegociacoes = new ListaNegociacoes();
+        this._negociacoesView = new NegociacoesView($("#negociacoesView"));
+
+        this._negociacoesView.update(this._listaNegociacoes);
     }
     
     adiciona(event) {
@@ -15,12 +18,12 @@ class NegociacaoController{ // Responsável pela ação de capturar o conteúdo 
         // Uma instância de negociação, responsável por receber os valores através do constructor e montar o objeto.
 
         this._listaNegociacoes.adiciona(this._criaNegociacao());
+        this._negociacoesView.update(this._listaNegociacoes);
         this._limpaFormulario();
-
-        console.log(this._listaNegociacoes.negociacoes);
     }
 
-    _criaNegociacao(){
+    _criaNegociacao() {
+ 
         return new Negociacao(
             DateHelper.textoParaData(this._inputData.value),
             this._inputQuantidade.value,
@@ -28,7 +31,8 @@ class NegociacaoController{ // Responsável pela ação de capturar o conteúdo 
         );
     }
 
-    _limpaFormulario(){
+    _limpaFormulario() {
+
         this._inputData.value = "";
         this._inputData.focus();
         this._inputQuantidade.value = 1;
