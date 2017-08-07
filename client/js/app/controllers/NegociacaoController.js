@@ -28,6 +28,19 @@ class NegociacaoController{ // Responsável pela ação de capturar o conteúdo 
 
         let service = new NegociacaoService();
 
+        Promise.all(
+            [
+                service.obterNegociacoesDaSemana(),
+                service.obterNegociacoesDaSemanaAnterior(),
+                service.obterNegociacoesDaSemanaRetrasada(),
+            ]
+        ).then(negociacoes =>{
+            negociacoes
+            .reduce((arrayAchatado, array) => arrayAchatado.concat(array, []))
+                .forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
+                this._mensagem.texto = "Negociações importadas com sucesso";
+        }).catch(erro => this._mensagem.texto = erro);
+        /*
         service.obterNegociacoesDaSemana()
             .then(negociacoes => {
                 negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
@@ -48,7 +61,7 @@ class NegociacaoController{ // Responsável pela ação de capturar o conteúdo 
                 this._mensagem.texto = "Negociações da Semana Retrasada Obtidas com Sucesso";
             })
             .catch(erro => this._mensagem.texto = erro);
-
+            */
             /*
         service.obterNegociacoesDaSemana((erro, negociacoes) => {
             
