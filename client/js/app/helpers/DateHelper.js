@@ -15,14 +15,30 @@ class DateHelper {
 
     static textoParaData(texto){
         
-        if(!/^\d{4}-\d{2}-\d{2}$/.test(texto))
-            throw new Error("A data precisa estar no formato aaaa-mm-dd");
+        if(!/^\d{2}\/?\d{2}\/?\d{4}$/.test(texto))
+
+            throw new Error("A data precisa estar no formato dd/mm/aaaa");
         
-        return new Date(...texto.split('-').map((item, indice) => item - indice % 2)); 
-         // Remove os ítens e os coloca separadamente em cada posição do Array
-         // .map navega pelo array passando o conteúdo, a => é uma Arrow Function. 
-         // Quando tem apenas uma linha de código, pode ser construída dessa forma.
+        if(/^\d{2}\/\d{2}\/\d{4}$/.test(texto)) {
 
+            return new Date(...texto.split('\/').reverse().map((item, indice) => item - indice % 2)); 
+            // Remove os ítens e os coloca separadamente em cada posição do Array
+            // .map navega pelo array passando o conteúdo, a => é uma Arrow Function. 
+            // Quando tem apenas uma linha de código, pode ser construída dessa forma.
+
+        }else if(/^\d{2}\d{2}\d{4}$/.test(texto)){
+
+            let dataDia = texto.match(/\d{2}/);
+            let dataDiaMes = texto.match(/\d{4}/);
+            let dataAno = texto.match(/\d{4}$/);
+            let dataMes = dataDiaMes.toString().match(/\d{2}$/);
+            let texto2 = `${dataDia.toString()}/${dataMes.toString()}/${ dataAno.toString()}`;   
+            
+            return new Date(...texto2.split('/').reverse().map((item, indice) => item - indice % 2)); 
+            // Remove os ítens e os coloca separadamente em cada posição do Array
+            // .map navega pelo array passando o conteúdo, a => é uma Arrow Function. 
+            // Quando tem apenas uma linha de código, pode ser construída dessa forma.
+            
+        }
     }
-
 }

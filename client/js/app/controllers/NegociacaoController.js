@@ -3,11 +3,12 @@ class NegociacaoController{ // Responsável pela ação de capturar o conteúdo 
     constructor() {
 
         let $ = document.querySelector.bind(document); // converte o método document.querySelctor na variável $, só é possível graças ao .bind que permite que o document não perca seu contexto e continue como objeto mesmo após ser convertido em $.
+        this._ordemAtual = '';
         this._inputData = $("#data");
         this._inputQuantidade = $("#quantidade");
         this._inputValor = $("#valor");
 
-        this._listaNegociacoes = new Bind(new ListaNegociacoes(), new NegociacoesView($("#negociacoesView")), 'adiciona', 'esvazia');
+        this._listaNegociacoes = new Bind(new ListaNegociacoes(), new NegociacoesView($("#negociacoesView")), 'adiciona', 'esvazia', 'ordena', 'inverteOrdem');
 
         this._mensagem = new Bind(new Mensagem, new MensagemView($("#mensagemView")), 'texto');
     }
@@ -17,11 +18,15 @@ class NegociacaoController{ // Responsável pela ação de capturar o conteúdo 
         event.preventDefault();
         // Uma instância de negociação, responsável por receber os valores através do constructor e montar o objeto.
 
-        this._listaNegociacoes.adiciona(this._criaNegociacao());
-        
-        this._mensagem.texto = 'Negociação adicionada com sucesso!!!';
+        try {
 
-        this._limpaFormulario();
+            this._listaNegociacoes.adiciona(this._criaNegociacao());
+            this._mensagem.texto = 'Negociação adicionada com sucesso!!!';
+            this._limpaFormulario();            
+        } catch(erro) {
+
+            this._mensagem.texto = erro;
+        }
     }
 
     importaNegociacoes() {
@@ -58,5 +63,17 @@ class NegociacaoController{ // Responsável pela ação de capturar o conteúdo 
         this._inputData.focus();
         this._inputQuantidade.value = 1;
         this._inputValor.value = 0.0;
+    }
+
+    ordena(coluna) {
+
+        if(this._ordemAtual == coluna) {
+
+            this._listaNegociacoes.inverteOrdem();
+        }else {
+
+            this._listaNegociacoes.ordena((a,b) => a[coluna] - b[coluna]);
+        }
+        this._ordemAtual = coluna;
     }
 }
