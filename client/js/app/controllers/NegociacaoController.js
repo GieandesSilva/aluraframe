@@ -11,6 +11,20 @@ class NegociacaoController{ // Responsável pela ação de capturar o conteúdo 
         this._listaNegociacoes = new Bind(new ListaNegociacoes(), new NegociacoesView($("#negociacoesView")), 'adiciona', 'esvazia', 'ordena', 'inverteOrdem');
 
         this._mensagem = new Bind(new Mensagem, new MensagemView($("#mensagemView")), 'texto');
+
+        ConnectionFactory
+            .getConnection()
+            .then(connection => new NegociacaoDao(connection))
+            .then(dao => dao.listaTodos())
+            .then(negociacoes => 
+                negociacoes.forEach(negociacao => 
+                    this._listaNegociacoes.adiciona(negociacao)
+                )
+            ).catch(erro => {
+
+                console.log(erro);
+                this._mensagem.texto = error;
+            })
     }
     
     adiciona(event) {
@@ -18,15 +32,23 @@ class NegociacaoController{ // Responsável pela ação de capturar o conteúdo 
         event.preventDefault();
         // Uma instância de negociação, responsável por receber os valores através do constructor e montar o objeto.
 
-        try {
+        ConnectionFactory
+            .getConnection()
+            .then(connection =>{
 
-            this._listaNegociacoes.adiciona(this._criaNegociacao());
-            this._mensagem.texto = 'Negociação adicionada com sucesso!!!';
-            this._limpaFormulario();            
-        } catch(erro) {
+                let negociacao = this._criaNegociacao();
+                new NegociacaoDao(connection)
+                    .adiciona(negociacao)
+                    .then(() => {
 
-            this._mensagem.texto = erro;
-        }
+                        this._listaNegociacoes.adiciona(negociacao);
+                        this._mensagem.texto = 'Negociação adicionada com sucesso!!!';
+                        this._limpaFormulario();            
+                    })
+                    
+            })
+            .catch(erro => this._mensagem.texto = erro);
+
     }
 
     importaNegociacoes() {
@@ -43,17 +65,23 @@ class NegociacaoController{ // Responsável pela ação de capturar o conteúdo 
 
     apaga(){
 
-        this._listaNegociacoes.esvazia();
+        ConnectionFactory
+            .getConnection()
+            .then(connection => new NegociacaoDao(connection))
+            .then(dao => dao.apagaTodos())
+            .then(mensagem => {
 
-        this._mensagem.texto = "Negociações apagadas com sucesso!!!";
+                this._mensagem.texto = mensagem;
+                this._listaNegociacoes.esvazia();
+            });
     }
 
     _criaNegociacao() {
  
         return new Negociacao(
             DateHelper.textoParaData(this._inputData.value),
-            this._inputQuantidade.value,
-            this._inputValor.value
+            parseInt(this._inputQuantidade.value),
+            parseFloat(this._inputValor.value)
         );
     }
 
