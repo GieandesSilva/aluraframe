@@ -53,7 +53,6 @@ System.register([], function (_export, _context) {
                                 if (props.includes(prop) && ProxyFactory._ehFuncao(target[prop])) {
 
                                     return function () {
-                                        console.log(" A propriedade \"" + prop + "\" foi interceptada!!!");
                                         var retorno = Reflect.apply(target[prop], target, arguments);
                                         acao(target);
                                         return retorno;
